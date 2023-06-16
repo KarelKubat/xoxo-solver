@@ -1,3 +1,4 @@
+// Package solver has the logic to solve the puzzle.
 package solver
 
 import (
@@ -6,16 +7,21 @@ import (
 	"github.com/KarelKubat/xoxo-solver/tile"
 )
 
+// Solver is the receiver and contains a puzzle board to work on.
 type Solver struct {
 	puzzle *puzzle.Puzzle
 }
 
+// New initializes and returns a Solver.
 func New(p *puzzle.Puzzle) *Solver {
 	return &Solver{
 		puzzle: p,
 	}
 }
 
+// FillHorizontalMiddles populates middle tiles enclosed by X's or O's. E.g., --X-X-- can ever only
+// lead to --XOX--. There must be an O in the middle position, since three consecutive same tiles
+// are forbidden. It returns true when board changes were made.
 func (p *Solver) FillHorizontalMiddles() bool {
 	filled := false
 	for r := 0; r < p.puzzle.Height; r++ {
@@ -38,6 +44,8 @@ func (p *Solver) FillHorizontalMiddles() bool {
 	return filled
 }
 
+// FillVerticalMiddles populates middle tiles, but vertically. It returns true when board changes
+// were made.
 func (p *Solver) FillVerticalMiddles() bool {
 	filled := false
 	for r := 0; r < p.puzzle.Height; r++ {
@@ -60,6 +68,9 @@ func (p *Solver) FillVerticalMiddles() bool {
 	return filled
 }
 
+// FillHorizontalSides populates prefixes or postfixes. E.g., --XX-- can only ever be solved
+// by prefixing and postfixing with an O into -OXXO-, because 3 consecutive identical tiles are
+// forbidden. It returns true when board changes were made.
 func (p *Solver) FillHorizontalSides() bool {
 	filled := false
 	for r := 0; r < p.puzzle.Height; r++ {
@@ -91,6 +102,8 @@ func (p *Solver) FillHorizontalSides() bool {
 	return filled
 }
 
+// FillVerticalSides populates prefixes or postfixes but vertically. It returns true when board
+// changes were made.
 func (p *Solver) FillVerticalSides() bool {
 	filled := false
 	for r := 0; r < p.puzzle.Height; r++ {
@@ -122,6 +135,8 @@ func (p *Solver) FillVerticalSides() bool {
 	return filled
 }
 
+// FillBlanks starts the recursive puzzle solver and returns true when a solution is found, else
+// false.
 func (p *Solver) FillBlanks() bool {
 	// Start filling at the first blank spot.
 	for r := 0; r < p.puzzle.Height; r++ {
@@ -135,6 +150,11 @@ func (p *Solver) FillBlanks() bool {
 	return true
 }
 
+// fillAt is a recursive helper. The arguments are the Y/X coordinates of a blank tile to start
+// solving, and an iteration counter (nice for tracing). fillAt calls itself recursively to fill
+// the "next" empty tile. The return value for each iteration is true when a tile could be placed,
+// else false. Since fillAt calls itself, the overall result is true when the puzzle could be
+// solved.
 func (p *Solver) fillAt(row, col, iteration int) bool {
 	// Beyond the board, or at already filled tiles, is the stop condition.
 	if row >= p.puzzle.Height || p.puzzle.HasValue(row, col) {
