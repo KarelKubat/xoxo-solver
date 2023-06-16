@@ -1,5 +1,11 @@
 # XOXO Puzzle Solver
 
+<!-- toc -->
+- [Invoking the solver](#invoking-the-solver)
+- [How the solver works](#how-the-solver-works)
+- [The code](#the-code)
+<!-- /toc -->
+
 I came across this type of puzzle in April 2022. It's a variant of Sudoku, but just a tad different. I thought it would be neat to write up a solver. Plus it keeps me busy during a rainy weekend.
 
 The puzzle goes as follows:
